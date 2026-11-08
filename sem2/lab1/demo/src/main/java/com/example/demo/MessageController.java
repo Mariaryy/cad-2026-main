@@ -1,3 +1,5 @@
+package com.example.demo;
+
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,19 +7,23 @@ import java.util.List;
 @RestController
 public class MessageController {
     private List<String> userMessages = new ArrayList<>();
+
     @GetMapping("/")
     public String helloWorld() {
         return "Hello, World!";
     }
+
     @GetMapping("/messages")
     public List<String> getAllMessages() {
         return userMessages;
     }
+
     @PostMapping("/messages")
     public String publishMessage(@RequestBody String message) {
         userMessages.add(message);
         return "Message published successfully!";
     }
+
     @PutMapping("/messages/{index}")
     public String updateMessage(@PathVariable int index, @RequestBody String
             message) {
@@ -27,6 +33,7 @@ public class MessageController {
         }
         return "Message not found at index " + index;
     }
+
     @DeleteMapping("/messages/{index}")
     public String deleteMessage(@PathVariable int index) {
         if (index >= 0 && index < userMessages.size()) {
@@ -36,9 +43,18 @@ public class MessageController {
         return "Message not found at index " + index;
     }
 
-    @DeleteMapping("/messages")
+    @DeleteMapping("/messages/clear-all")
     public String clearAllMessages() {
         userMessages.clear();
         return "All messages cleared successfully!";
     }
+
+    @GetMapping("/messages/{index}")
+    public String getMessageByIndex(@PathVariable int index) {
+        if (index >= 0 && index < userMessages.size()) {
+            return userMessages.get(index);
+        }
+        return "Message not found at index " + index;
+    }
+
 }
