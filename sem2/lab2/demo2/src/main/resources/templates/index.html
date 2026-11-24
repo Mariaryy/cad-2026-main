@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 40px; color: #333; }
+        h1 { text-align: center; color: #2c3e50; }
+        ul { list-style-type: none; padding: 0; max-width: 600px; margin: 0 auto; }
+        li { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; }
+        .task-info { display: flex; flex-direction: column; }
+        .task-title { font-weight: bold; font-size: 1.1em; }
+        .task-desc { color: #7f8c8d; font-size: 0.9em; }
+        .status { margin-top: 5px; font-size: 0.85em; font-weight: bold; }
+        .status-pending { color: #e67e22; }
+        .status-completed { color: #27ae60;}
+        .actions { display: flex; gap: 10px; align-items: center; }
+        button { cursor: pointer; border: none; padding: 8px 12px; border-radius: 5px; color: white; font-weight: bold; }
+        .btn-complete { background-color: #3498db; }
+        .btn-complete:hover { background-color: #2980b9; }
+        .btn-delete { background-color: #e74c3c; text-decoration: none; padding: 8px 12px; border-radius: 5px; color: white; font-weight: bold; }
+        .btn-delete:hover { background-color: #c0392b; }
+        .add-form { max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .add-form input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .add-form button { background-color: #2ecc71; width: 100%; padding: 12px; font-size: 1em; }
+        .add-form button:hover { background-color: #27ae60; }
+    </style>
+</head>
+<body>
+<h1>Мой список задач</h1>
+
+<ul>
+    <li th:each="task : ${tasks}">
+        <div class="task-info">
+            <span class="task-title" th:text="${task.title}"></span>
+            <span class="task-desc" th:text="${task.description}"></span>
+            <span class="status" th:classappend="${task.completed ? 'status-completed' : 'status-pending'}"
+                  th:text="${task.completed ? 'Выполнено' : 'В процессе'}"></span>
+        </div>
+
+        <div class="actions">
+            <form th:action="@{/updateTask/{id}(id=${task.id})}" method="post" th:if="${!task.completed}">
+                <input type="hidden" name="completed" value="true">
+                <button type="submit" class="btn-complete">Выполнить</button>
+            </form>
+
+            <a th:href="@{/deleteTask/{id}(id=${task.id})}"
+               class="btn-delete"
+               onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить</a>
+        </div>
+    </li>
+</ul>
+
+<div class="add-form">
+    <h2>Добавить новую задачу</h2>
+    <form th:action="@{/addTask}" method="post">
+        <input type="text" id="title" name="title" placeholder="Название задачи..." required>
+        <input type="text" id="description" name="description" placeholder="Описание задачи..." required>
+        <button type="submit">Добавить задачу</button>
+    </form>
+</div>
+</body>
+</html>
